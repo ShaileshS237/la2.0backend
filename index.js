@@ -21,7 +21,7 @@ var corsOptions = {
 app.use(cors(corsOptions));
 
 var transporter = nodemailer.createTransport({
-	service: "gmail",
+	service: "gmail ",
 	auth: {
 		user: "shailesh_32113223@nitkkr.ac.in",
 		pass: "bhptmdtrnybdbetv",
