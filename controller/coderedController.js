@@ -1,6 +1,6 @@
-const CodeRed = require("../model/codered");
+const CodeRed = require("../model/coderedModel");
 
-const getCodeRed = async (req, res) => {
+exports.getCodeRed = async (req, res) => {
 	CodeRed.find({ isActive: 1 })
 		.then((responce) => {
 			res.json({
@@ -14,5 +14,3 @@ const getCodeRed = async (req, res) => {
 			});
 		});
 };
-
-module.exports = { getCodeRed };

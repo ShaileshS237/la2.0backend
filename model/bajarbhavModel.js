@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 
-let blooddonarSchema = new mongoose.Schema({
+let bajarbhavSchema = new mongoose.Schema({
 	_id: mongoose.Schema.Types.ObjectId,
 	order: String,
 	name: String,
+	name_en: String,
 	imgURL: String,
 	bgColor: String,
 	minPrice: Number,
@@ -11,4 +12,4 @@ let blooddonarSchema = new mongoose.Schema({
 	lastUpdate: String,
 });
 
-module.exports = mongoose.model("bloodonar", blooddonarSchema);
+module.exports = mongoose.model("bajarbhav", bajarbhavSchema);

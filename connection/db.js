@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
-// mongodb+srv://shailesh:<password>@cluster0.exiprdk.mongodb.net/?retryWrites=true&w=majority
+// require("dotenv").config(); // to load environment variables from .env file
 
-const DB =
-  "mongodb+srv://shailesh:1JZzOQ21CAxXEEeg@cluster0.exiprdk.mongodb.net/loveakot_db?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URL;
 
 mongoose
-  .connect(DB)
-  .then((val) => {
-    console.log("connect");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+	.connect(uri, {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
+	.then(() => console.log("Connected to MongoDB database"))
+	.catch((error) =>
+		console.error("Error connecting to MongoDB database:", error)
+	);
