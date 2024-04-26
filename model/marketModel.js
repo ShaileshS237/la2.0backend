@@ -51,6 +51,13 @@ let marketListSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	email: {
+		type: String,
+		required: false,
+	},
+	latitude: String,
+	longitude: String,
+
 	closedOnDay: {
 		type: String,
 	},
@@ -70,7 +77,10 @@ let marketListSchema = new mongoose.Schema({
 
 let ratingSchema = new mongoose.Schema({
 	storeId: String,
-	userId: String,
+	userId: {
+		type: String,
+		ref: "User",
+	},
 	rating: Number,
 	description: String,
 	dateAdded: {

@@ -38,7 +38,6 @@ exports.addMarketInfo = async (req, res) => {
 exports.getAllMarketInfo = async (req, res) => {
 	const { id } = req.params;
 	MarketList.find({ categoryId: id })
-		.populate("rating")
 		.then((response) => {
 			res.json({
 				data: response,
@@ -84,6 +83,7 @@ exports.addRating = async (req, res) => {
 exports.getAllRating = async (req, res) => {
 	const { id } = req.params;
 	Rating.find({ storeId: id })
+		.populate({ path: "userId", select: "fname lname" })
 		.then((response) => {
 			res.json({
 				data: response,
