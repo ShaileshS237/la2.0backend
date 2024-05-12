@@ -7,8 +7,6 @@ pipeline {
             steps{
                 git url: "https://github.com/ShaileshS237/la2.0backend.git", branch: "master"
                 echo 'Code is clonning Done.'
-                echo 'The Git commit which Trigger this Job ===>'
-                git log -1 HEAD --oneline
             }
         }
         stage("build"){
@@ -22,6 +20,14 @@ pipeline {
             steps{
                 sh "docker-compose up -d"
                 echo 'Successfully Deployed'
+            }
+        }
+        stage('Print Git Commit') {
+            steps {
+                script {
+                    def gitCommit = sh(script: "git log -1 HEAD --oneline", returnStdout: true).trim()
+                    echo "The Git commit which triggered this Job ===> ${gitCommit}"
+                }
             }
         }
     }
