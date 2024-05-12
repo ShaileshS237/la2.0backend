@@ -1,5 +1,5 @@
 pipeline {
-    agent { label "main-server"}
+    agent any
 
     stages {
 
