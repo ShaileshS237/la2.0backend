@@ -1,4 +1,3 @@
-#for jenkins CI
 pipeline {
     agent { label "main-server"}
 
