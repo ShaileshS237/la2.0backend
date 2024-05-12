@@ -1,0 +1,8 @@
+version: '1.1'
+
+services:
+  app:
+    image: "loveakot-image:latest"
+    container_name: la-backend
+    ports:
+      - "3000:3000"
