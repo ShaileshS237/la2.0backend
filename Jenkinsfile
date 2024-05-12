@@ -11,6 +11,7 @@ pipeline {
         }
         stage("build"){
             steps{
+                sh "docker-compose dowm --rmi all"
                 sh "docker build -t loveakot-image:latest ."
                 echo 'Code build is Done.'
             }
