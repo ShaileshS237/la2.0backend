@@ -1,22 +1,20 @@
 pipeline {
     agent any
-
     stages {
-
-        stage("code"){
+        stage("Code"){
             steps{
                 git url: "https://github.com/ShaileshS237/la2.0backend.git", branch: "master"
                 echo 'Code is clonning Done.'
             }
         }
-        stage("build"){
+        stage("Build"){
             steps{
                 sh "docker-compose down --rmi all"
                 sh "docker build -t loveakot-image:latest ."
                 echo 'Code build is Done.'
             }
         }
-        stage("deploy"){
+        stage("Deploy"){
             steps{
                 sh "docker-compose up -d"
                 echo 'Successfully Deployed'
