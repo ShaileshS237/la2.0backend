@@ -1,23 +1,20 @@
-# Stage 1: Build the application
-FROM node:20 AS build
+# Use an official Node.js runtime as the base image
+FROM node:20
 
+# Set the working directory in the container
 WORKDIR /usr/src/app
 
+# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
+
+# Install app dependencies
 RUN npm install
+
+# Copy the rest of the application code to the working directory
 COPY . .
-RUN npm run build  
 
-# Stage 2: Create the production image
-FROM node:lts-alpine
-
-WORKDIR /usr/src/app
-
-COPY --from=build /usr/src/app/package*.json ./
-COPY --from=build /usr/src/app/dist ./dist
-
-RUN npm install --only=production
-
+# Expose the port your app runs on
 EXPOSE 3000
 
-CMD ["node", "./dist/index.js"]
+# Command to run your Node.js application
+CMD ["node", "index.js"]
