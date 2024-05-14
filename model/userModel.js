@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
 	lastEdit: {
 		type: Date,
 	},
-	colorForAvatar: {
+	imageForAvatar: {
 		type: String,
 	},
 	isActive: {

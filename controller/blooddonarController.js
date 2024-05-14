@@ -26,10 +26,11 @@ exports.getBloodDonar = async (req, res) => {
 exports.addBloodDonar = async (req, res) => {
 	const blooddonar = bloodonar(req.body);
 
-	bloodonar
+	blooddonar
 		.save()
 		.then((result) => {
 			res.json({
+				code: 200,
 				data: result,
 			});
 		})

@@ -21,6 +21,7 @@ exports.getAllList = async (req, res) => {
 };
 
 exports.addMarketInfo = async (req, res) => {
+	console.log(req.body);
 	const newList = new MarketList(req.body);
 	newList
 		.save()

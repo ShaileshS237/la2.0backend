@@ -125,7 +125,7 @@ exports.getAllPosts = async (req, res) => {
 			.skip(limit)
 			.limit(10)
 			.sort({ dateTime: -1 })
-			.populate({ path: "userId", select: "fname lname" });
+			.populate({ path: "userId", select: "imageForAvatar fname lname " });
 
 		for (const post of allPost) {
 			const likes = await PostLike.findOne({

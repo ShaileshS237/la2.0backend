@@ -7,13 +7,12 @@ const { sendOTP, verifyOTP } = require("otpless-node-js-auth-sdk");
 // Registration route
 exports.register = async (req, res, next) => {
 	try {
-		console.log(req.body);
 		const user = new User({
 			fname: req.body.fname,
 			lname: req.body.lname,
 			mobile: req.body.mobile,
 			lastEdit: Date.now(),
-			colorForAvatar: req.body.colorForAvatar,
+			imageForAvatar: req.body.imageForAvatar,
 		});
 		console.log(
 			process.env.OTP_LESS_ClientID,
@@ -50,8 +49,6 @@ exports.register = async (req, res, next) => {
 };
 
 exports.verifyOTP = async (req, res) => {
-	console.log(req.body);
-	console.log(process.env.OTP_LESS_ClientID, process.env.OTP_LESS_ClientSecret);
 	const response = await verifyOTP(
 		undefined,
 		"+91" + req.body.mobile,
@@ -61,7 +58,6 @@ exports.verifyOTP = async (req, res) => {
 		process.env.OTP_LESS_ClientSecret
 	);
 
-	console.log(response);
 	if (response.isOTPVerified) {
 		const user = await User.findOne({ mobile: req.body.mobile });
 		if (user) {
@@ -70,7 +66,7 @@ exports.verifyOTP = async (req, res) => {
 				data: {
 					fname: user.fname,
 					lname: user.lname,
-					colorForAvatar: user.colorForAvatar,
+					imageForAvatar: user.imageForAvatar,
 					_id: user._id,
 					dateOfRegistration: user.dateOfRegistration,
 					mobile: user.mobile,
@@ -175,7 +171,7 @@ exports.checkUser = async (req, res) => {
 // 			name: user.name,
 // 			mobile: user.mobile,
 // 			dateOfRegistration: user.dateOfRegistration,
-// 			colorForAvatar: user.colorForAvatar,
+// 			imageForAvatar: user.imageForAvatar,
 // 		});
 // 	} catch (error) {
 // 		console.error("Error logging in user:", error);
@@ -232,7 +228,7 @@ exports.updateUser = async (req, res) => {
 		user.gender = req.body.gender || user.gender;
 		user.password = hashedPassword || user.password;
 		user.lastEdit = Date.now();
-		user.colorForAvatar = req.body.colorForAvatar || user.colorForAvatar;
+		user.imageForAvatar = req.body.imageForAvatar || user.imageForAvatar;
 
 		// Save updated user to database
 		const updatedUser = await user.save();
