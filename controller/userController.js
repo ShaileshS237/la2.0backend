@@ -70,6 +70,7 @@ exports.verifyOTP = async (req, res) => {
 					_id: user._id,
 					dateOfRegistration: user.dateOfRegistration,
 					mobile: user.mobile,
+					accessToNotifications: user.accessToNotifications,
 				},
 			});
 		} else {
@@ -144,41 +145,6 @@ exports.checkUser = async (req, res) => {
 	}
 };
 
-// Login route
-// exports.login = async (req, res) => {
-// 	try {
-// 		// Find user by mobile number
-// 		const user = await User.findOne({
-// 			mobile: req.body.mobile,
-// 		});
-// 		if (!user) {
-// 			return res.status(400).send({
-// 				message: "User not found",
-// 			});
-// 		}
-
-// 		// Check password using bcrypt
-// 		const isValidPassword = await user.isValidPassword(req.body.password);
-// 		if (!isValidPassword) {
-// 			return res.status(400).send({
-// 				message: "Invalid password",
-// 			});
-// 		}
-
-// 		// Send user details
-// 		res.send({
-// 			_id: user._id,
-// 			name: user.name,
-// 			mobile: user.mobile,
-// 			dateOfRegistration: user.dateOfRegistration,
-// 			imageForAvatar: user.imageForAvatar,
-// 		});
-// 	} catch (error) {
-// 		console.error("Error logging in user:", error);
-// 		res.status(500).send("Internal server error");
-// 	}
-// };
-
 exports.resetPassword = async (req, res) => {
 	try {
 		const { mobile, newPassword, otp } = req.body;
@@ -240,115 +206,27 @@ exports.updateUser = async (req, res) => {
 	}
 };
 
-// try {
+exports.updateUser = async (req, res) => {
+	try {
+		// Find user by ID
+		const user = await User.findById(req.body.id);
+		console.log(user);
+		if (!user) {
+			return res.status(404).send("User not found");
+		}
 
-// 	const { mobile, otp } = req.body;
-// 	const existingOTP = await Otp.findOne({ mobile });
-// 	if (existingOTP) {
-// 		if (existingOTP.otp === otp) {
-// 			return res.status(200).send({ message: "OTP verification successful" });
-// 		} else {
-// 			return res.status(400).send({ message: "Invalid OTP" });
-// 		}
-// 	} else {
-// 		return res
-// 			.status(404)
-// 			.send({ message: "No OTP found for the provided mobile number" });
-// 	}
-// } catch (error) {
-// 	console.log(error);
-// 	return res.status(500).send("Internal Server Error");
-// }
+		// Update user fields
+		user.fname = req.body.fname || user.fname;
+		user.lname = req.body.lname || user.lname;
+		user.lastEdit = Date.now();
+		user.imageForAvatar = req.body.imageForAvatar || user.imageForAvatar;
 
-// try {
-// 	const existingOTP = await Otp.findOne({ mobile: req.body.mobile });
+		// Save updated user to database
+		const updatedUser = await user.save();
 
-// 	if (existingOTP) {
-// 		if (existingOTP.otpCount >= 3) {
-// 			return res
-// 				.status(400)
-// 				.send(
-// 					"You have reached the maximum limit for OTP requests. Please try again later."
-// 				);
-// 		}
-
-// 		const currentTime = Date.now();
-// 		const lastSentTime = existingOTP.OtpSent.getTime(); // Convert last sent time to milliseconds
-// 		const timeDifference = currentTime - lastSentTime;
-
-// 		if (timeDifference < 50000) {
-// 			// 50 seconds in milliseconds
-// 			return res
-// 				.status(400)
-// 				.send("Please wait for 50 seconds before requesting another OTP.");
-// 		}
-
-// 		const otp = Math.floor(10000 + Math.random() * 90000);
-
-// 		// Call Fast2SMS API to send OTP
-// 		const response = await axios.get(
-// 			`https://www.fast2sms.com/dev/bulkV2?authorization=nv94XeyFKq8TBWb5lHRfPMjz3EAIs1UgZVN76tCpkGDaLY0wcJgd26aPS8pLD9EcTRz3KJOMeqCUGW0u&route=otp&variables_values=${1485}&flash=0&numbers=${
-// 				req.body.mobile
-// 			}`
-// 		);
-
-// 		if (response.data && response.data.return === true) {
-// 			existingOTP.otp = otp;
-// 			existingOTP.OtpSent = currentTime;
-// 			existingOTP.otpCount = existingOTP.otpCount + 1;
-// 			const updatedOTP = await existingOTP.save();
-// 			return res.status(200).send(updatedOTP);
-// 		} else {
-// 			return res
-// 				.status(500)
-// 				.send("Failed to send OTP. Please try again later.");
-// 		}
-// 	} else {
-// 		const newOTP = new Otp({
-// 			mobile: req.body.mobile,
-// 			otp: otp,
-// 			OtpSent: Date.now(),
-// 			otpCount: 1,
-// 		});
-// 		const otp = Math.floor(10000 + Math.random() * 90000);
-
-// 		const response = await axios.get(
-// 			`https://www.fast2sms.com/dev/bulkV2?authorization=nv94XeyFKq8TBWb5lHRfPMjz3EAIs1UgZVN76tCpkGDaLY0wcJgd26aPS8pLD9EcTRz3KJOMeqCUGW0u&route=otp&variables_values=${otp}&flash=0&numbers=${req.body.mobile}`
-// 		);
-
-// 		if (response.data && response.data.return === true) {
-// 			const savedOTP = await newOTP.save();
-// 			return res.status(201).send(savedOTP);
-// 		} else {
-// 			return res
-// 				.status(500)
-// 				.send("Failed to send OTP. Please try again later.");
-// 		}
-// 	}
-// } catch (error) {
-// 	console.log(error);
-// 	return res.status(500).send("Internal Server Error");
-// }
-// try {
-// 	const message = `Hi, Your OTP is : 8488`;
-
-// 	const params = {
-// 		Message: message,
-// 		PhoneNumber: "+919850092824",
-// 		MessageAttributes: {
-// 			"AWS.SNS.SMS.SenderID": {
-// 				DataType: "String",
-// 				StringValue: "String", //
-// 			},
-// 		},
-// 	};
-
-// 	const command = new PublishCommand(params);
-// 	const response = await sns.send(command);
-
-// 	console.log("OTP sent successfully:", response);
-// 	res.status(200).send("OTP sent successfully"); // Send success response to the client
-// } catch (error) {
-// 	console.error("Error sending OTP:", error);
-// 	res.status(500).send("Error sending OTP"); // Send error response to the client
-// }
+		res.status(200).send({ isActive: true, data: updatedUser });
+	} catch (error) {
+		console.error("Error updating user:", error);
+		res.status(500).send("Internal server error");
+	}
+};

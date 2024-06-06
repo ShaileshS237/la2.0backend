@@ -21,14 +21,12 @@ exports.createPost = (req, res) => {
 			});
 		})
 		.catch((err) => {
-			console.log(err);
 			res.status(500).send("Internal server error");
 		});
 };
 
 exports.addComment = async (req, res, next) => {
 	const postId = req.params.postId;
-	console.log(postId, req.body);
 
 	try {
 		const post = await Post.find({ postId: postId });
@@ -53,7 +51,6 @@ exports.addComment = async (req, res, next) => {
 			postId: postId,
 			comment: comment,
 		});
-		console.log(newComment);
 
 		const savedComment = await newComment.save();
 
@@ -62,7 +59,6 @@ exports.addComment = async (req, res, next) => {
 			data: savedComment,
 		});
 	} catch (error) {
-		console.log(error);
 		res.status(500).json({
 			success: false,
 			error: "Server error",
@@ -73,7 +69,6 @@ exports.addComment = async (req, res, next) => {
 // Add Like route /:postId/likes
 exports.addLike = async (req, res) => {
 	const { postId, userId } = req.params;
-	console.log(req.params);
 	try {
 		const alreadyLike = await PostLike.findOne({
 			postId: postId,
@@ -91,7 +86,6 @@ exports.addLike = async (req, res) => {
 		};
 		const like = new PostLike(payLoad);
 		await like.save();
-		console.log(like);
 		const post = await Post.findOneAndUpdate(
 			{ _id: postId },
 			{ $inc: { noOfLikes: 1 } },
@@ -120,25 +114,34 @@ exports.getAllPosts = async (req, res) => {
 	try {
 		const userId = req.params.userId;
 		const limit = parseInt(req.params.limit);
-		const totalPost = await Post.find();
+
+		// Fetch all posts with necessary information in one query
 		const allPost = await Post.find()
 			.skip(limit)
 			.limit(10)
 			.sort({ dateTime: -1 })
-			.populate({ path: "userId", select: "imageForAvatar fname lname " });
+			.populate({ path: "userId", select: "imageForAvatar fname lname" });
 
-		for (const post of allPost) {
-			const likes = await PostLike.findOne({
-				postId: post._id,
-				userId: userId,
-			});
-			post.likedByUser = !!likes;
-		}
+		// Fetch all likes by the user in one query
+		const userLikes = await PostLike.find({ userId: userId });
+
+		// Create a set of liked post IDs for quick lookup
+		const likedPostIds = new Set(
+			userLikes.map((like) => like.postId.toString())
+		);
+
+		// Add likedByUser property to each post
+		const updatedPosts = allPost.map((post) => {
+			post = post.toObject(); // Convert Mongoose document to plain object
+			post.likedByUser = likedPostIds.has(post._id.toString());
+			return post;
+		});
+
 		res.status(200).json({
 			status: "success",
-			totalPages: totalPost.length,
+			totalPages: allPost.length,
 			data: {
-				allPost,
+				allPost: updatedPosts,
 			},
 		});
 	} catch (err) {
@@ -195,6 +198,24 @@ exports.getPostById = async (req, res) => {
 	}
 };
 
+exports.deletePostById = async (req, res) => {
+	const postId = req.params.id;
+
+	try {
+		const post = await Post.findById(postId);
+
+		if (!post) {
+			return res.status(404).json({ message: "Post not found" });
+		}
+		await Comment.deleteMany({ postId: postId });
+		await PostLike.deleteMany({ postId: postId });
+		await Post.deleteOne({ _id: postId });
+		return res.status(200).json({ message: "Post deleted successfully" });
+	} catch (error) {
+		return res.status(500).json({ message: "Internal server error" });
+	}
+};
+
 // View comment on post by Id route
 exports.getCommentsByPostId = (req, res) => {
 	const postId = req.params.postId;
@@ -224,4 +245,34 @@ exports.getCommentsByPostId = (req, res) => {
 			});
 		}
 	);
+};
+
+exports.dislikePost = async (req, res) => {
+	try {
+		const userId = req.params.userId;
+		const postId = req.params.postId;
+
+		// Remove the like from the PostLike collection
+		const like = await PostLike.findOneAndDelete({ userId, postId });
+
+		if (!like) {
+			return res.status(404).json({
+				status: "fail",
+				message: "Like not found",
+			});
+		}
+
+		// Decrease the like count in the Post collection
+		await Post.findByIdAndUpdate(postId, { $inc: { noOfLikes: -1 } });
+
+		res.status(200).json({
+			status: "success",
+			message: "Dislike successful and like count decremented",
+		});
+	} catch (err) {
+		res.status(400).json({
+			status: "fail",
+			message: err.message,
+		});
+	}
 };

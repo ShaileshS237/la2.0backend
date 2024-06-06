@@ -67,6 +67,7 @@ exports.requestBlood = async (req, res) => {
 			});
 		})
 		.catch((err) => {
+			console.log(err);
 			res.json({
 				message: err,
 			});
@@ -74,6 +75,7 @@ exports.requestBlood = async (req, res) => {
 };
 
 exports.allBloodRequest = async (req, res) => {
+	console.log(req.params.id);
 	reqBld
 		.find({ userId: { $ne: req.params.id } })
 		.then((result) => {
@@ -124,6 +126,7 @@ exports.getAllBdCamp = async (req, res) => {
 
 exports.updateStatus = async (req, res) => {
 	const { id, isAvailable } = req.body;
+	console.log(id, isAvailable);
 	try {
 		const updatedData = await bloodonar.findOneAndUpdate(
 			{ _id: id },

@@ -10,6 +10,10 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
+	accessToNotifications: {
+		type: Boolean,
+		default: true,
+	},
 	mobile: {
 		type: String,
 		unique: true,
@@ -36,6 +40,10 @@ const userSchema = new mongoose.Schema({
 	},
 	imageForAvatar: {
 		type: String,
+	},
+	role: {
+		type: String,
+		default: "user",
 	},
 	isActive: {
 		type: Boolean,

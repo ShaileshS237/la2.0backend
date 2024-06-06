@@ -76,7 +76,10 @@ let marketListSchema = new mongoose.Schema({
 });
 
 let ratingSchema = new mongoose.Schema({
-	storeId: String,
+	storeId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "MarketList",
+	},
 	userId: {
 		type: String,
 		ref: "User",
@@ -90,7 +93,6 @@ let ratingSchema = new mongoose.Schema({
 });
 
 let buySellSchema = new mongoose.Schema({
-	_id: mongoose.Schema.Types.ObjectId,
 	image: {
 		type: String,
 		required: false,
@@ -103,13 +105,18 @@ let buySellSchema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	userid: {
+	whatsappno: {
 		type: String,
 		required: true,
 	},
-	image: {
+	userId: {
 		type: String,
-		required: false,
+		required: true,
+		ref: "User",
+	},
+	addedOn: {
+		type: Date,
+		default: Date.now,
 	},
 });
 
