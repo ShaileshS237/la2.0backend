@@ -1,0 +1,8 @@
+version: '3.4'
+# To run backend
+services:
+  app:
+    image: "loveakot-image:latest"
+    container_name: la-backend
+    ports:
+      - "3000:3000"
