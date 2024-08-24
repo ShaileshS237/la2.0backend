@@ -25,6 +25,10 @@ const document_route = require("./routes/documentRoutes.js");
 
 var corsOptions = {
 	origin: "*",
+	methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Allow specific HTTP methods
+	allowedHeaders: "Content-Type, Authorization", // Allow specific headers
+	exposedHeaders: "Content-Length, X-Foo, X-Bar", // Headers that browsers are allowed to access
+	preflightContinue: false, // Pass the CORS preflight response to the next handler
 };
 
 app.use(cors(corsOptions));
@@ -39,7 +43,7 @@ var transporter = nodemailer.createTransport({
 
 app.get("/", (req, res) => {
 	res.json({
-		message: "Welcome to LOVE ❤️ AKOT ",
+		message: "Welcome to LOVE ❤️ AKOT (24/08) ",
 	});
 });
 
