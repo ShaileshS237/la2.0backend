@@ -44,7 +44,7 @@ var transporter = nodemailer.createTransport({
 
 app.get("/", (req, res) => {
 	res.json({
-		message: "Welcome to LOVE ❤️ AKOT (24/08) ",
+		message: "Welcome to LOVE ❤️ AKOT (31/08) ",
 	});
 });
 
