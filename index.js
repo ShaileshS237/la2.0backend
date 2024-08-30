@@ -31,7 +31,8 @@ var corsOptions = {
 	preflightContinue: false, // Pass the CORS preflight response to the next handler
 };
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); // Apply CORS globally
+app.options("*", cors(corsOptions)); // Handle preflight requests
 
 var transporter = nodemailer.createTransport({
 	service: "gmail ",
