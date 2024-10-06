@@ -10,6 +10,9 @@ router.post("/addRating", marketController.addRating);
 router.get("/getAllRating/:id", marketController.getAllRating);
 router.get("/getAllCategory", marketController.getAllCategory);
 router.post("/addBuyPost", marketController.addBuySellPost);
+router.post("/requestCategory", marketController.requestCategory);
 router.get("/getBuyPost", marketController.getBuySellPost);
+router.post("/addBuyPostComment", marketController.addComment);
+router.get("/getAllComments/:postId", marketController.getAllComments);
 
 module.exports = router;

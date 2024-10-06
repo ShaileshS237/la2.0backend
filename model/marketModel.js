@@ -120,10 +120,41 @@ let buySellSchema = new mongoose.Schema({
 	},
 });
 
+let requestCategorySchema = mongoose.Schema({
+	userId: String,
+	requestBy: String,
+	userMobile: String,
+	categoryRequested: String,
+	ateAdded: {
+		type: Date,
+		default: Date.now,
+	},
+});
+
 let buynsellCategory = new mongoose.Schema({
 	cid: Number,
 	name: {
 		type: String,
+	},
+});
+
+const buySellCommentSchema = new mongoose.Schema({
+	postId: {
+		type: mongoose.Schema.Types.ObjectId, // Should be ObjectId, not String
+		required: true,
+	},
+	userId: {
+		type: mongoose.Schema.Types.ObjectId, // Should be ObjectId, not String
+		ref: "User", // References User schema
+		required: true,
+	},
+	comment: {
+		type: String,
+		required: true,
+	},
+	dateTime: {
+		type: Date,
+		default: Date.now,
 	},
 });
 
@@ -135,4 +166,6 @@ module.exports = {
 	Buynsellcategory: mongoose.model("Buynsellcategory", buynsellCategory),
 	MarketList: mongoose.model("MarketList", marketListSchema),
 	Rating: mongoose.model("Rating", ratingSchema),
+	RequestCategory: mongoose.model("RequestCategory", requestCategorySchema),
+	BuySellComment: mongoose.model("BuySellComment", buySellCommentSchema),
 };

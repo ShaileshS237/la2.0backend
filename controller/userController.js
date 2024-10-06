@@ -71,6 +71,7 @@ exports.verifyOTP = async (req, res) => {
 					dateOfRegistration: user.dateOfRegistration,
 					mobile: user.mobile,
 					accessToNotifications: user.accessToNotifications,
+					role: user.role,
 				},
 			});
 		} else {

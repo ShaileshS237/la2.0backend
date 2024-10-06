@@ -4,12 +4,32 @@ const {
 	Buynsellcategory,
 	MarketList,
 	Rating,
+	RequestCategory,
+	BuySellComment,
 } = require("../model/marketModel");
 
 exports.getAllList = async (req, res) => {
 	Market.find({})
 		.then((response) => {
 			res.json({
+				data: response,
+			});
+		})
+		.catch((err) => {
+			res.json({
+				message: err,
+			});
+		});
+};
+
+exports.requestCategory = async (req, res) => {
+	console.log(req.body);
+	const newCategoryRequest = new RequestCategory(req.body);
+	newCategoryRequest
+		.save()
+		.then((response) => {
+			res.json({
+				code: 200,
 				data: response,
 			});
 		})
@@ -141,7 +161,7 @@ exports.addBuySellPost = async (req, res) => {
 
 exports.getBuySellPost = async (req, res) => {
 	Buysell.find({})
-		.populate({ path: "userId", select: "fname lname imageForAvatar" })
+		.populate({ path: "userId", select: "fname lname imageForAvatar mobile" })
 		.then((response) => {
 			res.json({
 				data: response,
@@ -150,6 +170,61 @@ exports.getBuySellPost = async (req, res) => {
 		.catch((err) => {
 			res.json({
 				message: err,
+			});
+		});
+};
+
+exports.addComment = async (req, res) => {
+	const { comment, postId, userId } = req.body;
+
+	console.log(postId, userId, comment);
+
+	try {
+		const post = await Buysell.find({ postId: postId });
+
+		if (!post) {
+			return res.status(404).json({
+				success: false,
+				error: "Post not found",
+			});
+		}
+
+		const { comment } = req.body;
+
+		if (!comment) {
+			return res.status(400).json({
+				success: false,
+				error: "Comment is required",
+			});
+		}
+
+		const newComment = new BuySellComment({
+			postId: postId,
+			comment: comment,
+			userId: userId,
+		});
+
+		const savedComment = await newComment.save();
+
+		res.status(201).json({
+			success: true,
+			data: savedComment,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			error: "Server error",
+		});
+	}
+};
+
+exports.getAllComments = async (req, res) => {
+	const { postId } = req.params;
+	BuySellComment.find({ postId: postId })
+		.populate({ path: "userId", select: "fname lname imageForAvatar mobile" })
+		.then((response) => {
+			res.json({
+				data: response,
 			});
 		});
 };

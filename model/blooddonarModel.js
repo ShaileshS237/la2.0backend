@@ -5,22 +5,28 @@ let blooddonarSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		required: true,
 		ref: "User",
-		unique: true,
 	},
 	age: Number,
 	bldGroup: String,
 	gender: String,
 	allergies: String,
 	address: String,
+	whatsAppNumber: String,
 	isAvailable: {
 		type: Boolean,
 		default: true,
+	},
+	emergencyDonar: {
+		type: Boolean,
+		default: false,
 	},
 });
 
 let reqBldSchema = new mongoose.Schema({
 	userId: {
-		type: String,
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: "User",
 	},
 	isEmergency: {
 		type: Boolean,
@@ -29,6 +35,9 @@ let reqBldSchema = new mongoose.Schema({
 	bldGroup: String,
 	address: String,
 	message: String,
+	time: {
+		type: String,
+	},
 	date: {
 		type: Date,
 		default: Date.now,
@@ -56,7 +65,7 @@ let bdCampSchema = new mongoose.Schema({
 });
 
 module.exports = {
-	bloodonar: mongoose.model("bloodonar", blooddonarSchema),
+	blooddonar: mongoose.model("blooddonar", blooddonarSchema),
 	reqBld: mongoose.model("reqBld", reqBldSchema),
 	bdCamp: mongoose.model("bdCamp", bdCampSchema),
 };

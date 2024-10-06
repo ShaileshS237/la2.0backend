@@ -5,6 +5,7 @@ let bajarbhavSchema = new mongoose.Schema({
 	order: String,
 	name: String,
 	name_en: String,
+	translation_key: String,
 	imgURL: String,
 	bgColor: String,
 	minPrice: Number,

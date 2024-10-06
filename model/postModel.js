@@ -6,6 +6,7 @@ const postSchema = new mongoose.Schema({
 		ref: "User",
 		required: true,
 	},
+
 	noOfLikes: {
 		type: Number,
 		default: 0,
@@ -19,7 +20,6 @@ const postSchema = new mongoose.Schema({
 	},
 	postDescription: {
 		type: String,
-		required: true,
 	},
 	dateTime: {
 		type: Date,
@@ -29,7 +29,12 @@ const postSchema = new mongoose.Schema({
 
 const commentSchema = new mongoose.Schema({
 	postId: {
-		type: String,
+		type: mongoose.Schema.Types.ObjectId, // Should be ObjectId, not String
+		required: true,
+	},
+	userId: {
+		type: mongoose.Schema.Types.ObjectId, // Should be ObjectId, not String
+		ref: "User", // References User schema
 		required: true,
 	},
 	comment: {

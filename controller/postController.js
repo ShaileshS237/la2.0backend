@@ -27,6 +27,7 @@ exports.createPost = (req, res) => {
 
 exports.addComment = async (req, res, next) => {
 	const postId = req.params.postId;
+	const commentedUserId = req.params.userId;
 
 	try {
 		const post = await Post.find({ postId: postId });
@@ -50,6 +51,7 @@ exports.addComment = async (req, res, next) => {
 		const newComment = new Comment({
 			postId: postId,
 			comment: comment,
+			userId: commentedUserId,
 		});
 
 		const savedComment = await newComment.save();
@@ -68,6 +70,7 @@ exports.addComment = async (req, res, next) => {
 
 // Add Like route /:postId/likes
 exports.addLike = async (req, res) => {
+	console.log(req.params);
 	const { postId, userId } = req.params;
 	try {
 		const alreadyLike = await PostLike.findOne({
@@ -155,7 +158,10 @@ exports.getAllPosts = async (req, res) => {
 exports.getCommetsById = async (req, res) => {
 	const postId = req.params.postId;
 	try {
-		const post = await Comment.find({ postId: postId });
+		const post = await Comment.find({ postId: postId }).populate({
+			path: "userId",
+			select: "imageForAvatar fname lname",
+		});
 		if (!post) {
 			return res.status(404).json({
 				success: false,
